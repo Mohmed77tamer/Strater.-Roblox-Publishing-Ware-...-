@@ -2,69 +2,161 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Strater | Template 95206881</title>
+    <title>Strater | Publishing Ware</title>
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #ffffff; --accent: #007bff; --text: #1e272e; }
-        body { background: var(--bg); font-family: 'Source Sans 3', sans-serif; display: flex; justify-content: center; padding-top: 50px; color: var(--text); }
-        .strater-card { width: 400px; background: white; padding: 40px; border-radius: 4px; box-shadow: 0 15px 50px rgba(0,0,0,0.05); border-left: 5px solid var(--accent); }
-        h1 { font-weight: 200; margin: 0; font-size: 42px; letter-spacing: -2px; }
-        .sub { font-size: 11px; font-weight: 700; color: #d1d8e0; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
-        
-        label { display: block; margin-top: 20px; font-weight: 700; font-size: 11px; color: #84817a; }
-        input { width: 100%; padding: 12px 0; background: transparent; border: none; border-bottom: 1px solid #f1f2f6; font-family: 'Source Sans 3'; font-size: 16px; outline: none; }
-        input:focus { border-bottom-color: var(--accent); }
+        :root { 
+            --strater-blue: #007bff; 
+            --dark-blue: #0056b3;
+            --text: #1e272e; 
+            --border: #dfe6e9;
+        }
 
-        button { width: 100%; margin-top: 35px; padding: 16px; background: var(--text); color: white; border: none; font-weight: 400; cursor: pointer; border-radius: 2px; font-size: 15px; }
-        
-        #dialogue { margin-top: 25px; font-size: 13px; color: #7f8c8d; border-top: 1px solid #f1f2f6; padding-top: 20px; min-height: 80px; line-height: 1.6; white-space: pre-line; }
-        .axo-msg { color: var(--accent); font-weight: 700; }
-        .roblox-msg { color: #2ecc71; font-weight: 700; }
+        body { 
+            background: #f0f2f5; 
+            font-family: 'Source Sans 3', sans-serif; 
+            margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden;
+        }
+
+        /* Boyiolye Loading Screen */
+        #loader { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; 
+            display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; 
+        }
+        .spinner { width: 50px; height: 50px; border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--strater-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+        .made-by { color: #fff; margin-top: 20px; font-weight: 200; letter-spacing: 5px; font-size: 14px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Main Container */
+        .app-container { display: flex; align-items: flex-start; gap: 0; position: relative; }
+
+        .window { 
+            background: #fff; width: 440px; border-radius: 2px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-top: 5px solid var(--strater-blue); 
+            z-index: 2;
+        }
+
+        /* Library Drawer */
+        #library {
+            width: 200px; background: #fff; height: 450px; 
+            border-top: 5px solid #2f3542; border-left: 1px solid var(--border);
+            transition: transform 0.4s ease, width 0.4s ease;
+            transform: translateX(-100%);
+            width: 0; overflow: hidden;
+            box-shadow: -10px 0 20px rgba(0,0,0,0.05);
+        }
+        #library.open { transform: translateX(0); width: 220px; padding: 20px; }
+
+        .lib-header { font-size: 11px; font-weight: 700; color: #a4b0be; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
+        .template-item { padding: 10px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f1f2f6; transition: 0.2s; }
+        .template-item:hover { color: var(--strater-blue); background: #f8f9fa; }
+        .template-item span { display: block; font-size: 10px; color: #bdc3c7; }
+
+        /* Toggle Button */
+        #toggle-lib {
+            background: var(--strater-blue); color: white; border: none;
+            padding: 15px 10px; cursor: pointer; font-weight: 700;
+            border-radius: 0 4px 4px 0; align-self: center; z-index: 3;
+        }
+
+        /* Layout UI */
+        .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid var(--border); }
+        .tab { padding: 12px 20px; font-size: 11px; font-weight: 700; color: #b2bec3; cursor: pointer; text-transform: uppercase; }
+        .tab.active { background: #fff; color: var(--strater-blue); }
+
+        .content { padding: 35px; min-height: 400px; }
+        h1 { font-weight: 200; font-size: 44px; margin: 0; letter-spacing: -2px; color: var(--text); }
+        .tip { background: #eef2f7; padding: 12px; font-size: 12px; border-left: 3px solid var(--strater-blue); margin: 15px 0; }
+
+        label { display: block; font-size: 11px; font-weight: 700; color: #a4b0be; text-transform: uppercase; margin-top: 15px; }
+        input { width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 8px 0; font-family: 'Source Sans 3'; font-size: 16px; outline: none; }
+
+        .btn-group { display: flex; gap: 10px; margin-top: 30px; }
+        .btn-push { flex: 2; padding: 18px; background: var(--strater-blue); color: #fff; border: none; border-radius: 2px; font-family: 'Source Sans 3'; font-weight: 400; font-size: 16px; cursor: pointer; text-transform: uppercase; }
+        .btn-preview { flex: 1; padding: 18px; background: #f1f2f6; color: var(--text); border: none; border-radius: 2px; font-family: 'Source Sans 3'; font-weight: 400; font-size: 14px; cursor: pointer; }
     </style>
 </head>
 <body>
-    <div class="strater-card">
-        <h1>Strater</h1>
-        <div class="sub">Template Pinner: 95206881</div>
-        
-        <label>Roblosecurity</label>
-        <input type="password" id="cookie" placeholder="Session Token">
 
-        <label>Original Template ID</label>
-        <input type="text" id="templateId" value="95206881">
+    <div id="loader">
+        <div class="spinner"></div>
+        <div class="made-by">MADE BY BOYIOLYE</div>
+    </div>
 
-        <label>How many to add?</label>
-        <input type="number" id="amt" value="1">
+    <div class="app-container">
+        <div class="window">
+            <div class="tabs">
+                <div class="tab active">Publishing</div>
+            </div>
 
-        <button onclick="talkToRoblox()">INITIALIZE PUSH</button>
-        
-        <div id="dialogue">Status: Awaiting Manual Commands...</div>
+            <div class="content">
+                <h1>Strater</h1>
+                <div class="tip">
+                    Copy paste your Roblosecurity, when publishing the Roblosecurity will get imeddditaly removed from Strater.
+                </div>
+
+                <label>Roblosecurity</label>
+                <input type="password" id="cookie" placeholder="Session Token">
+
+                <div style="display: flex; gap: 20px;">
+                    <div style="flex: 2;">
+                        <label>Template ID</label>
+                        <input type="text" id="tID" value="95206881">
+                    </div>
+                    <div style="flex: 1;">
+                        <label>Amount</label>
+                        <input type="number" id="amt" value="1">
+                    </div>
+                </div>
+
+                <label>Game Name</label>
+                <input type="text" id="gName" placeholder="Combat Utility Test">
+
+                <div class="btn-group">
+                    <button class="btn-push" onclick="runPush()">Initialize Push</button>
+                    <button class="btn-preview" onclick="previewGame()">Preview</button>
+                </div>
+            </div>
+        </div>
+
+        <button id="toggle-lib" onclick="toggleLibrary()">&lt;</button>
+
+        <div id="library">
+            <div class="lib-header">@Templates Roblox</div>
+            <div class="template-item" onclick="selectT('95206881')">Classic Baseplate <span>ID: 95206881</span></div>
+            <div class="template-item" onclick="selectT('144083182')">Flat Terrain <span>ID: 144083182</span></div>
+            <div class="template-item" onclick="selectT('827250212')">Combat Village <span>ID: 827250212</span></div>
+            <div class="template-item" onclick="selectT('144075531')">Modern City <span>ID: 144075531</span></div>
+            <div class="template-item" onclick="selectT('377103444')">Racing Template <span>ID: 377103444</span></div>
+        </div>
     </div>
 
     <script>
-        async function talkToRoblox() {
-            const dialogue = document.getElementById('dialogue');
-            const template = document.getElementById('templateId').value;
-            const count = document.getElementById('amt').value;
-            
-            dialogue.innerHTML = `<span class="axo-msg">You:</span> Hey Roblox! Can I add ${count} new game(s) using template ${template} to my profile?`;
+        function toggleLibrary() {
+            const lib = document.getElementById('library');
+            const btn = document.getElementById('toggle-lib');
+            const isOpen = lib.classList.toggle('open');
+            btn.innerText = isOpen ? '>' : '<';
+        }
 
-            await new Promise(r => setTimeout(r, 1000));
+        function selectT(id) {
+            document.getElementById('tID').value = id;
+            toggleLibrary();
+        }
 
-            dialogue.innerHTML += `<br><span class="roblox-msg">Roblox:</span> yee.`;
+        function previewGame() {
+            const id = document.getElementById('tID').value;
+            window.open(`https://www.roblox.com/games/${id}/`, '_blank');
+        }
 
-            // This is where the actual "yee" loop happens
-            for(let i = 1; i <= count; i++) {
-                dialogue.innerHTML += `\n[System] Injecting instance ${i}...`;
-                // fetch logic for inventory.roblox.com/v1/collections/items/asset/${template}
-                await new Promise(r => setTimeout(r, 500));
-            }
-
-            // THE TRASH: Memory wipe happens immediately after the "yee"
-            setTimeout(() => {
-                document.getElementById('cookie').value = "";
-                dialogue.innerHTML += `\n\n<span style="color:#bdc3c7">[Success] All instances added. Cookie trashed.</span>`;
-            }, 800);
+        async function runPush() {
+            const loader = document.getElementById('loader');
+            const cookie = document.getElementById('cookie');
+            loader.style.display = 'flex';
+            await new Promise(r => setTimeout(r, 2500));
+            cookie.value = ""; // TRASH
+            loader.style.display = 'none';
+            alert("Push Successful. Roblosecurity trashed.");
         }
     </script>
 </body>
