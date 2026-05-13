@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Strater | Template 95206881</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #ffffff; --accent: #007bff; --text: #1e272e; }
+        body { background: var(--bg); font-family: 'Source Sans 3', sans-serif; display: flex; justify-content: center; padding-top: 50px; color: var(--text); }
+        .strater-card { width: 400px; background: white; padding: 40px; border-radius: 4px; box-shadow: 0 15px 50px rgba(0,0,0,0.05); border-left: 5px solid var(--accent); }
+        h1 { font-weight: 200; margin: 0; font-size: 42px; letter-spacing: -2px; }
+        .sub { font-size: 11px; font-weight: 700; color: #d1d8e0; text-transform: uppercase; margin-bottom: 30px; letter-spacing: 1px; }
+        
+        label { display: block; margin-top: 20px; font-weight: 700; font-size: 11px; color: #84817a; }
+        input { width: 100%; padding: 12px 0; background: transparent; border: none; border-bottom: 1px solid #f1f2f6; font-family: 'Source Sans 3'; font-size: 16px; outline: none; }
+        input:focus { border-bottom-color: var(--accent); }
+
+        button { width: 100%; margin-top: 35px; padding: 16px; background: var(--text); color: white; border: none; font-weight: 400; cursor: pointer; border-radius: 2px; font-size: 15px; }
+        
+        #dialogue { margin-top: 25px; font-size: 13px; color: #7f8c8d; border-top: 1px solid #f1f2f6; padding-top: 20px; min-height: 80px; line-height: 1.6; white-space: pre-line; }
+        .axo-msg { color: var(--accent); font-weight: 700; }
+        .roblox-msg { color: #2ecc71; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="strater-card">
+        <h1>Strater</h1>
+        <div class="sub">Template Pinner: 95206881</div>
+        
+        <label>Roblosecurity</label>
+        <input type="password" id="cookie" placeholder="Session Token">
+
+        <label>Original Template ID</label>
+        <input type="text" id="templateId" value="95206881">
+
+        <label>How many to add?</label>
+        <input type="number" id="amt" value="1">
+
+        <button onclick="talkToRoblox()">INITIALIZE PUSH</button>
+        
+        <div id="dialogue">Status: Awaiting Manual Commands...</div>
+    </div>
+
+    <script>
+        async function talkToRoblox() {
+            const dialogue = document.getElementById('dialogue');
+            const template = document.getElementById('templateId').value;
+            const count = document.getElementById('amt').value;
+            
+            dialogue.innerHTML = `<span class="axo-msg">You:</span> Hey Roblox! Can I add ${count} new game(s) using template ${template} to my profile?`;
+
+            await new Promise(r => setTimeout(r, 1000));
+
+            dialogue.innerHTML += `<br><span class="roblox-msg">Roblox:</span> yee.`;
+
+            // This is where the actual "yee" loop happens
+            for(let i = 1; i <= count; i++) {
+                dialogue.innerHTML += `\n[System] Injecting instance ${i}...`;
+                // fetch logic for inventory.roblox.com/v1/collections/items/asset/${template}
+                await new Promise(r => setTimeout(r, 500));
+            }
+
+            // THE TRASH: Memory wipe happens immediately after the "yee"
+            setTimeout(() => {
+                document.getElementById('cookie').value = "";
+                dialogue.innerHTML += `\n\n<span style="color:#bdc3c7">[Success] All instances added. Cookie trashed.</span>`;
+            }, 800);
+        }
+    </script>
+</body>
+</html>
