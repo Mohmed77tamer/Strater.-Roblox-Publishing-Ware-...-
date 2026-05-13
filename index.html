@@ -4,75 +4,136 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Strater | Publishing Ware</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono&display=swap" rel="stylesheet" />
   <style>
-    :root { --strater-blue: #007bff; --border: #e0e0e0; --jack-green: #22c55e; }
+    :root { --strater-blue: #007bff; --border: #e0e0e0; --jack-green: #22c55e; --error-red: #ff4d4d; }
     * { box-sizing: border-box; margin: 0; padding: 0; border-radius: 0 !important; }
     body { font-family: 'Source Sans 3', sans-serif; background: #f5f5f5; color: #1a1a1a; min-height: 100vh; }
+    
     .topbar { background: #fff; border-bottom: 1px solid var(--border); padding: 0 32px; height: 56px; display: flex; align-items: center; justify-content: space-between; border-top: 4px solid var(--strater-blue); }
-    .app-layout { display: flex; max-width: 1000px; margin: 40px auto; justify-content: center; gap: 20px; }
-    .window-container { width: 480px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+    .topbar-title { font-size: 15px; font-weight: 700; text-transform: uppercase; }
+
+    .container { max-width: 500px; margin: 40px auto; padding: 0 20px; }
     .tabs { display: flex; background: #fff; border: 1px solid var(--border); border-bottom: none; }
-    .tab { flex: 1; padding: 14px; font-size: 11px; font-weight: 700; color: #888; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; text-transform: uppercase; font-family: inherit; }
+    .tab { flex: 1; padding: 14px; font-size: 11px; font-weight: 700; color: #888; background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; text-transform: uppercase; }
     .tab.active { color: var(--strater-blue); border-bottom-color: var(--strater-blue); }
-    .card { background: #fff; border: 1px solid var(--border); padding: 24px; min-height: 580px; position: relative; }
+
+    .card { background: #fff; border: 1px solid var(--border); padding: 24px; min-height: 560px; position: relative; }
     .panel { display: none; }
     .panel.active { display: block; }
-    .field { margin-bottom: 12px; }
-    .field label { display: block; font-size: 10px; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; }
-    .field input { width: 100%; padding: 10px; font-size: 14px; border: 1px solid #ddd; background: #fafafa; outline: none; font-family: inherit; }
-    .btn-primary { width: 100%; padding: 14px; background: var(--strater-blue); color: #fff; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-family: inherit; }
-    .btn-primary:disabled { background: #ccc; cursor: not-allowed; }
-    .log-box { background: #111; height: 460px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #eee; }
+
+    .field { margin-bottom: 16px; }
+    .field label { display: block; font-size: 10px; font-weight: 800; color: #555; margin-bottom: 4px; text-transform: uppercase; }
+    .field input { width: 100%; padding: 12px; font-size: 14px; border: 1px solid #ddd; background: #fafafa; outline: none; font-family: inherit; }
+    
+    /* Image Import Style */
+    .file-input-wrapper { border: 1px dashed #ccc; padding: 10px; background: #fcfcfc; cursor: pointer; text-align: center; }
+    .file-input-wrapper:hover { border-color: var(--strater-blue); }
+    #icon-preview { width: 40px; height: 40px; background: #eee; display: inline-block; vertical-align: middle; margin-right: 10px; object-fit: cover; border: 1px solid #ddd; }
+
+    .status-row { display: flex; align-items: center; gap: 8px; margin: 20px 0 5px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+    .dot { width: 8px; height: 8px; background: #ddd; }
+    .dot.running { background: var(--strater-blue); animation: blink 0.8s infinite; }
+    .dot.done { background: var(--jack-green); }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+
+    .progress-bar-wrap { height: 2px; background: #eee; margin-bottom: 20px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: var(--strater-blue); width: 0%; transition: width 0.3s; }
+
+    .btn { width: 100%; padding: 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; border: none; cursor: pointer; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px; }
+    .btn-primary { background: var(--strater-blue); color: #fff; }
+    .btn-primary:disabled { background: #444; cursor: not-allowed; }
+
+    .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50% !important; animation: spin 0.8s linear infinite; display: none; }
+    .loading .spinner { display: block; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .log-box { background: #111; height: 400px; overflow-y: auto; padding: 15px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #eee; line-height: 1.6; }
+    .log-ok { color: var(--jack-green); }
+    .log-err { color: var(--error-red); }
+
+    footer { text-align: center; font-size: 10px; color: #999; margin-top: 40px; text-transform: uppercase; letter-spacing: 2px; }
   </style>
 </head>
 <body>
 
 <div class="topbar">
-  <span style="font-weight:600">Strater | Publishing Ware</span>
+  <span class="topbar-title">STRATER | PUBLISHING WARE</span>
 </div>
 
-<div class="app-layout">
-  <div class="window-container">
-    <div class="tabs">
-      <button class="tab active" onclick="switchTab('universe')">push :D</button>
-      <button class="tab" onclick="switchTab('place')">Update :D</button>
-      <button class="tab" onclick="switchTab('log')">Log</button>
+<div class="container">
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('universe')">push :D</button>
+    <button class="tab" onclick="switchTab('place')">update :D</button>
+    <button class="tab" onclick="switchTab('log')">Log</button>
+  </div>
+
+  <div class="card">
+    <div id="panel-universe" class="panel active">
+      <div class="field">
+        <label>Roblosecurity</label>
+        <input type="password" id="u-cookie" placeholder="Cookie token..." />
+      </div>
+      
+      <div class="field">
+        <label>Icon Upload</label>
+        <div class="file-input-wrapper" onclick="document.getElementById('icon-input').click()">
+            <img id="icon-preview" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" />
+            <span style="font-size: 11px; color: #666;">CLICK TO IMPORT IMAGE</span>
+            <input type="file" id="icon-input" accept="image/*" style="display:none;" onchange="handleImage(this)" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Template ID</label>
+        <input type="text" id="u-template" value="95206881" />
+      </div>
+      
+      <div class="row">
+        <div class="field"><label>Count</label><input type="number" id="u-count" value="1" /></div>
+        <div class="field"><label>Delay (s)</label><input type="number" id="u-delay" value="1" step="0.5" /></div>
+      </div>
+
+      <div class="status-row"><div class="dot" id="u-dot"></div><span id="u-status">Awaiting Start</span></div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="u-bar"></div></div>
+      
+      <button class="btn btn-primary" id="u-btn" onclick="runUniverses()">
+        <div class="spinner"></div>
+        <span class="btn-text">push :D</span>
+      </button>
     </div>
 
-    <div class="card">
-      <div id="panel-universe" class="panel active">
-        <div class="field">
-          <label>Roblosecurity</label>
-          <input type="password" id="u-cookie" placeholder=".ROBLOSECURITY token..." />
-        </div>
-        <div class="field">
-          <label>Experience Name</label>
-          <input type="text" id="u-name" placeholder="Name" />
-        </div>
-        <div style="display: flex; gap: 10px;">
-          <div class="field" style="flex:2"><label>Template ID</label><input type="text" id="u-template" value="95206881" /></div>
-          <div class="field" style="flex:1"><label>Amount</label><input type="number" id="u-count" value="1" /></div>
-        </div>
-        <button class="btn-primary" id="push-btn" onclick="runUniverses()">push :D</button>
-      </div>
-
-      <div id="panel-place" class="panel">
+    <div id="panel-place" class="panel">
+        <div class="field"><label>Universal-Places API Key</label><input type="password" id="p-api" /></div>
         <div class="field"><label>Target Universe ID</label><input type="text" id="p-universe" /></div>
-        <div class="field"><label>API Key</label><input type="password" id="p-api" /></div>
-        <div class="field"><label>Source Place ID</label><input type="text" id="p-template" value="95206881" /></div>
-        <button class="btn-primary" onclick="runPlaces()" style="background:#111">Update</button>
-      </div>
+        <button class="btn btn-primary" id="p-btn" onclick="runPlaces()">update :D</button>
+    </div>
 
-      <div id="panel-log" class="panel">
-        <div class="log-box" id="log"></div>
-      </div>
+    <div id="panel-log" class="panel">
+      <div class="log-box" id="log"></div>
     </div>
   </div>
+  <footer>Strater Publishing Ware</footer>
 </div>
 
 <script>
   const WORKER_URL = 'https://ezpublishserv.acc943132.workers.dev/';
+  let running = false;
+  let base64Icon = null;
+
+  function handleImage(input) {
+    const file = input.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        base64Icon = e.target.result;
+        document.getElementById('icon-preview').src = base64Icon;
+        log("Image imported successfully.", "info");
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
   function switchTab(id) {
     document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('active', ['universe', 'place', 'log'][i] === id));
@@ -83,52 +144,54 @@
   function log(msg, type = 'info') {
     const box = document.getElementById('log');
     const line = document.createElement('div');
-    line.innerHTML = `<span style="color:#555">[${new Date().toLocaleTimeString()}]</span> <span style="color:${type === 'err' ? '#ff4d4d' : (type === 'ok' ? '#22c55e' : '#eee')}">${msg}</span>`;
+    line.innerHTML = `<span style="color:#555">[${new Date().toLocaleTimeString()}]</span> <span class="log-${type}">${msg}</span>`;
     box.appendChild(line);
     box.scrollTop = box.scrollHeight;
   }
 
-  // FIXED: Push function now actually talks to the bridge
   async function runUniverses() {
-    const cookie = document.getElementById('u-cookie').value;
-    const name = document.getElementById('u-name').value;
-    const template = document.getElementById('u-template').value;
-    const count = document.getElementById('u-count').value;
-    const btn = document.getElementById('push-btn');
+    const btn = document.getElementById('u-btn');
+    const cookieEl = document.getElementById('u-cookie');
+    const cookie = cookieEl.value.trim();
+    const count = parseInt(document.getElementById('u-count').value);
+    
+    if(!cookie) return alert("Cookie missing.");
 
-    if(!cookie || !name) return alert("Please enter Cookie and Experience Name!");
-
-    btn.disabled = true;
-    btn.innerText = "PUSHING...";
+    running = true;
     switchTab('log');
-    log(`Starting mass push for: ${name}...`, "info");
+    log("INITIALIZING SEQUENCE...", "info");
+    btn.classList.add('loading');
+    btn.disabled = true;
 
-    try {
-      const response = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'massPush',
-          cookie: cookie,
-          name: name,
-          templateId: template,
-          amount: count
-        })
-      });
-
-      const result = await response.json();
-      log(result.message || "Push request processed.", result.ok ? "ok" : "err");
-    } catch (error) {
-      log("Critical Error: Could not connect to bridge.", "err");
-    } finally {
-      btn.disabled = false;
-      btn.innerText = "push :D";
+    for (let i = 1; i <= count; i++) {
+      if (!running) break;
+      document.getElementById('u-dot').className = 'dot running';
+      
+      try {
+        const resp = await fetch(WORKER_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            action: 'createUniverse', 
+            cookie, 
+            templateId: document.getElementById('u-template').value,
+            iconData: base64Icon // Sends the imported image
+          })
+        });
+        const res = await resp.json();
+        log(`[${i}/${count}] ${res.message}`, res.ok ? 'ok' : 'err');
+      } catch (e) { log(`[${i}] Bridge Connection Failed`, 'err'); }
+      
+      const prog = (i / count) * 100;
+      document.getElementById('u-bar').style.width = prog + '%';
+      if (i < count && running) await new Promise(r => setTimeout(r, document.getElementById('u-delay').value * 1000));
     }
-  }
 
-  async function runPlaces() {
-    // Similar fetch logic for the update panel
-    log("Sending update request to bridge...", "info");
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    document.getElementById('u-dot').className = 'dot done';
+    running = false;
+    cookieEl.value = '';
   }
 </script>
 </body>
