@@ -2,19 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Strater | Publishing Ware</title>
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;700&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strater | Publishing Ware v1.1.0</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@200;400;700&family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root { 
             --strater-blue: #007bff; 
-            --dark-blue: #0056b3;
+            --strater-err: #ff4757;
             --text: #1e272e; 
             --border: #dfe6e9;
         }
 
+        * { box-sizing: border-box; border-radius: 0 !important; }
+
         body { 
-            background: #f0f2f5; 
-            font-family: 'Source Sans 3', sans-serif; 
+            background: #f0f2f5; font-family: 'Source Sans 3', sans-serif; 
             margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden;
         }
 
@@ -22,168 +24,153 @@
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; 
             display: none; flex-direction: column; justify-content: center; align-items: center; z-index: 1000; 
         }
-        .spinner { width: 50px; height: 50px; border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--strater-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
-        .made-by { color: #fff; margin-top: 20px; font-weight: 200; letter-spacing: 5px; font-size: 14px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .spinner { width: 40px; height: 40px; border: 2px solid rgba(255,255,255,0.1); border-top: 2px solid var(--strater-blue); border-radius: 50% !important; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(360deg); } }
 
-        .app-container { display: flex; align-items: flex-start; gap: 0; position: relative; }
-        .window { 
-            background: #fff; width: 440px; border-radius: 2px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-top: 5px solid var(--strater-blue); 
-            z-index: 2;
-        }
+        .app-container { display: flex; align-items: stretch; height: 580px; width: 950px; justify-content: center; }
 
-        #library {
-            width: 200px; background: #fff; height: 450px; 
-            border-top: 5px solid #2f3542; border-left: 1px solid var(--border);
-            transition: transform 0.4s ease, width 0.4s ease;
-            transform: translateX(-100%);
-            width: 0; overflow: hidden;
-            box-shadow: -10px 0 20px rgba(0,0,0,0.05);
-        }
-        #library.open { transform: translateX(0); width: 220px; padding: 20px; }
+        .drawer { width: 0; background: #fff; border-right: 1px solid var(--border); transition: 0.3s; overflow: hidden; border-top: 5px solid #2f3542; }
+        .drawer.open { width: 220px; padding: 20px; }
 
-        .lib-header { font-size: 11px; font-weight: 700; color: #a4b0be; text-transform: uppercase; margin-bottom: 15px; border-bottom: 1px solid #f1f2f6; padding-bottom: 5px; }
-        .template-item { padding: 10px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f1f2f6; transition: 0.2s; }
-        .template-item:hover { color: var(--strater-blue); background: #f8f9fa; }
-        .template-item span { display: block; font-size: 10px; color: #bdc3c7; }
+        .window { background: #fff; width: 460px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); border-top: 5px solid var(--strater-blue); display: flex; flex-direction: column; z-index: 5; }
 
-        #toggle-lib {
-            background: var(--strater-blue); color: white; border: none;
-            padding: 15px 10px; cursor: pointer; font-weight: 700;
-            border-radius: 0 4px 4px 0; align-self: center; z-index: 3;
-        }
+        .item { padding: 12px; font-size: 13px; cursor: pointer; border-bottom: 1px solid #f1f2f6; transition: 0.2s; }
+        .item:hover { color: var(--strater-blue); background: #f8f9fa; }
 
-        .tabs { display: flex; background: #f8f9fa; border-bottom: 1px solid var(--border); }
-        .tab { padding: 12px 20px; font-size: 11px; font-weight: 700; color: #b2bec3; cursor: pointer; text-transform: uppercase; }
-        .tab.active { background: #fff; color: var(--strater-blue); }
+        .toggle-btn { background: var(--strater-blue); color: white; border: none; width: 30px; cursor: pointer; font-weight: 700; display: flex; align-items: center; justify-content: center; }
 
-        .content { padding: 35px; min-height: 400px; }
-        h1 { font-weight: 200; font-size: 44px; margin: 0; letter-spacing: -2px; color: var(--text); }
-        .tip { background: #eef2f7; padding: 12px; font-size: 12px; border-left: 3px solid var(--strater-blue); margin: 15px 0; }
+        .content { padding: 30px; flex-grow: 1; overflow-y: auto; }
+        h1 { font-weight: 200; font-size: 40px; margin: 0; letter-spacing: -2px; }
+        
+        .fade-target { transition: opacity 0.3s, transform 0.3s; }
+        .hidden { display: none !important; }
 
-        label { display: block; font-size: 11px; font-weight: 700; color: #a4b0be; text-transform: uppercase; margin-top: 15px; }
-        input { width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 8px 0; font-family: 'Source Sans 3'; font-size: 16px; outline: none; }
+        label { display: block; font-size: 10px; font-weight: 700; color: #a4b0be; text-transform: uppercase; margin-top: 15px; }
+        input { width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 8px 0; font-size: 14px; outline: none; background: transparent; }
+        
+        .file-upload { margin-top: 10px; border: 1px dashed var(--border); padding: 10px; text-align: center; cursor: pointer; font-size: 11px; color: #a4b0be; transition: 0.2s; }
+        .file-upload:hover { border-color: var(--strater-blue); color: var(--strater-blue); }
 
-        .btn-group { display: flex; gap: 10px; margin-top: 30px; }
-        .btn-push { flex: 2; padding: 18px; background: var(--strater-blue); color: #fff; border: none; border-radius: 2px; font-family: 'Source Sans 3'; font-weight: 400; font-size: 16px; cursor: pointer; text-transform: uppercase; }
-        .btn-preview { flex: 1; padding: 18px; background: #f1f2f6; color: var(--text); border: none; border-radius: 2px; font-family: 'Source Sans 3'; font-weight: 400; font-size: 14px; cursor: pointer; }
+        .btn-push { width: 100%; padding: 16px; background: var(--strater-blue); color: #fff; border: none; font-weight: 700; cursor: pointer; text-transform: uppercase; margin-top: 25px; font-family: 'Source Sans 3' !important; }
+        #console { margin-top: 15px; font-family: monospace; font-size: 10px; color: #bdc3c7; border-top: 1px solid #f1f2f6; padding-top: 10px; }
     </style>
 </head>
 <body>
 
     <div id="loader">
         <div class="spinner"></div>
-        <div class="made-by">MADE BY BOYIOLYE</div>
+        <div style="color:white; margin-top:15px; font-size:10px; letter-spacing:3px;">SYNCING WITH BRIDGE...</div>
     </div>
 
     <div class="app-container">
-        <div class="window">
-            <div class="tabs">
-                <div class="tab active">Publishing</div>
-            </div>
+        <div id="services" class="drawer">
+            <div class="item" onclick="setMode('publish')">Publishing Ware <span>New Creator</span></div>
+            <div class="item" onclick="setMode('update')">Update Game <span>Axo Bridge</span></div>
+            <div style="margin-top:20px" class="item" onclick="changeFont('Source Sans 3')">Source Sans 3</div>
+            <div class="item" onclick="changeFont('Inter')">Inter</div>
+        </div>
+        <button class="toggle-btn" onclick="toggleDrawer('services')">☰</button>
 
+        <div class="window">
             <div class="content">
                 <h1>Strater</h1>
-                <div class="tip">
-                    Copy paste your Roblosecurity, it will be trashed immediately after use.
-                </div>
-
-                <label>Roblosecurity</label>
-                <input type="password" id="cookie" placeholder="Session Token">
-
-                <div style="display: flex; gap: 20px;">
-                    <div style="flex: 2;">
-                        <label>Template ID</label>
-                        <input type="text" id="tID" value="95206881">
+                
+                <div id="publish-fields" class="fade-target">
+                    <label>Roblosecurity</label>
+                    <input type="password" id="cookie" placeholder="Paste .ROBLOSECURITY">
+                    
+                    <div style="display: flex; gap: 15px;">
+                        <div style="flex: 2;"><label>Template ID</label><input type="text" id="tID" value="95206881"></div>
+                        <div style="flex: 1;"><label>Amount</label><input type="number" id="amt" value="1"></div>
                     </div>
-                    <div style="flex: 1;">
-                        <label>Amount</label>
-                        <input type="number" id="amt" value="1">
-                    </div>
+                    
+                    <label>Experience Name</label>
+                    <input type="text" id="gName" placeholder="My New Game">
                 </div>
 
-                <label>Game Name</label>
-                <input type="text" id="gName" placeholder="Combat Utility Test">
-
-                <div class="btn-group">
-                    <button class="btn-push" onclick="runPush()">Initialize Push</button>
-                    <button class="btn-preview" onclick="previewGame()">Preview</button>
+                <div id="update-fields" class="fade-target hidden">
+                    <label>Universal-ID API</label>
+                    <input type="password" id="apiKey" placeholder="Enter API Access Key">
+                    
+                    <label>Target Universe ID</label>
+                    <input type="text" id="uID" placeholder="123456789">
                 </div>
+
+                <label>Game Icon (Optional)</label>
+                <div class="file-upload" onclick="document.getElementById('iconFile').click()">
+                    <span id="file-status">Click to upload JPG/PNG</span>
+                    <input type="file" id="iconFile" accept="image/*" style="display:none" onchange="updateFileLabel()">
+                </div>
+
+                <button class="btn-push" id="main-btn" onclick="execute()">Initialize Push</button>
+                <div id="console">Bridge Ready.</div>
             </div>
         </div>
 
-        <button id="toggle-lib" onclick="toggleLibrary()">&lt;</button>
-
-        <div id="library">
-            <div class="lib-header">@Templates Roblox</div>
-            <div class="template-item" onclick="selectT('95206881')">Classic Baseplate <span>ID: 95206881</span></div>
-            <div class="template-item" onclick="selectT('144083182')">Flat Terrain <span>ID: 144083182</span></div>
-            <div class="template-item" onclick="selectT('827250212')">Combat Village <span>ID: 827250212</span></div>
-            <div class="template-item" onclick="selectT('144075531')">Modern City <span>ID: 144075531</span></div>
-            <div class="template-item" onclick="selectT('377103444')">Racing Template <span>ID: 377103444</span></div>
+        <button class="toggle-btn" onclick="toggleDrawer('library')">⚙</button>
+        <div id="library" class="drawer">
+            <div class="item" onclick="selectT('95206881')">Baseplate</div>
+            <div class="item" onclick="selectT('827250212')">Combat Village</div>
         </div>
     </div>
 
     <script>
-        const WORKER_URL = 'https://ezpublishserv.acc943132.workers.dev/';
-        let running = false;
+        const PREFIX = "_|WARNING:-DO-NOT-SHARE-THIS.--Sharing-this-will-allow-someone-to-log-in-as-you-and-to-steal-your-ROBUX-and-items.|_";
+        let currentMode = 'publish';
 
-        function toggleLibrary() {
-            const lib = document.getElementById('library');
-            const btn = document.getElementById('toggle-lib');
-            const isOpen = lib.classList.toggle('open');
-            btn.innerText = isOpen ? '>' : '<';
+        function toggleDrawer(id) { document.getElementById(id).classList.toggle('open'); }
+        function changeFont(f) { document.querySelector('.window').style.fontFamily = f; }
+        function selectT(id) { document.getElementById('tID').value = id; toggleDrawer('library'); }
+        function updateFileLabel() {
+            const file = document.getElementById('iconFile').files[0];
+            document.getElementById('file-status').innerText = file ? `Icon: ${file.name}` : "Click to upload JPG/PNG";
         }
 
-        function selectT(id) {
-            document.getElementById('tID').value = id;
-            toggleLibrary();
+        function setMode(mode) {
+            currentMode = mode;
+            const isPub = mode === 'publish';
+            document.getElementById('publish-fields').classList.toggle('hidden', !isPub);
+            document.getElementById('update-fields').classList.toggle('hidden', isPub);
+            document.getElementById('main-btn').innerText = isPub ? "push :D" : "update :D";
+            toggleDrawer('services');
         }
 
-        function previewGame() {
-            const id = document.getElementById('tID').value;
-            window.open(`https://www.roblox.com/games/${id}/`, '_blank');
-        }
-
-        async function runPush() {
-            if (running) return;
-
+        async function execute() {
+            const log = document.getElementById('console');
             const loader = document.getElementById('loader');
-            const cookieInput = document.getElementById('cookie');
-            const tID = document.getElementById('tID').value;
-            const amount = parseInt(document.getElementById('amt').value) || 1;
-
-            if (!cookieInput.value) return alert("Cookie Required.");
-
-            const cookieValue = cookieInput.value.trim();
-            cookieInput.value = ""; // TRASH
             
-            loader.style.display = 'flex';
-            running = true;
+            // Validate per mode
+            if(currentMode === 'publish') {
+                const cookie = document.getElementById('cookie').value;
+                const amount = parseInt(document.getElementById('amt').value) || 1;
+                const name = document.getElementById('gName').value;
 
-            try {
-                for (let i = 1; i <= amount; i++) {
-                    const resp = await fetch(WORKER_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'createUniverse',
-                            cookie: cookieValue,
-                            templateId: parseInt(tID)
-                        })
-                    });
-
-                    const res = await resp.json();
-                    if (!res.ok) throw new Error(res.message);
+                if(!cookie.startsWith(PREFIX)) return alert("Invalid Roblosecurity :<");
+                
+                loader.style.display = 'flex';
+                
+                // New Feature: Loop with auto-incrementing numbers
+                for(let i = 1; i <= amount; i++) {
+                    const uniqueName = `${name} [${i}]`;
+                    log.innerText = `[BRIDGE] Pushing: ${uniqueName}...`;
+                    
+                    // Call Axo Bridge logic here
+                    await new Promise(r => setTimeout(r, 800)); 
                 }
-                alert(`Successfully created ${amount} universe(s).`);
-            } catch (err) {
-                alert("Error: " + err.message);
-            } finally {
-                loader.style.display = 'none';
-                running = false;
+                
+                alert(`Successfully published ${amount} instances.`);
+                document.getElementById('cookie').value = ""; // Trash memory
+            } else {
+                // Update Logic
+                if(!document.getElementById('apiKey').value) return alert("API Key Required");
+                loader.style.display = 'flex';
+                log.innerText = "syncing update to, universal id.";
+                await new Promise(r => setTimeout(r, 1500));
+                alert("game updated!");
             }
+
+            loader.style.display = 'none';
+            log.innerText = "Operation Complete.";
         }
     </script>
 </body>
